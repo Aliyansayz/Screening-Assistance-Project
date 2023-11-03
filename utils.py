@@ -12,7 +12,7 @@ from langchain import HuggingFaceHub
 
 
 #Extract Information from PDF file
-def get_pdf_text(pdf_doc):
+def get_pdf_text(filename):
     text = ""
     pdf_ = PdfReader(filename)
     for page in pdf_.pages:
