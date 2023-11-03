@@ -10,6 +10,7 @@ from langchain.llms.openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
 from langchain import HuggingFaceHub
 import numpy as np
+import requests
 
 
 #Extract Information from PDF file
