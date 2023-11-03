@@ -83,18 +83,18 @@ def similar_docs_hf(query, final_docs_list, k):
       }
     response = requests.post(API_URL, headers=headers, json=payload)
 
-    sorted_list = response.json()
+    score_list = response.json()
 
     
-    pairs = list(zip( sorted_list , final_docs_list))
+    pairs = list(zip( score_list , final_docs_list))
 
     # Sort the pairs in descending order of the first element of each pair
     pairs.sort(key=lambda x: x[0], reverse=True)
 
     # Unzip the pairs back into two lists
-    sorted_list , final_docs_list = zip(*pairs)
+    score_list , final_docs_list = zip(*pairs)
     # sorted_list[:k] ,
-    return   final_docs_list[:k] 
+    return    score_list , final_docs_list 
 
 
 #Function to help us get relavant documents from vector store - based on user input
