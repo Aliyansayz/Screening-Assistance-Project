@@ -9,6 +9,7 @@ from pypdf import PdfReader
 from langchain.llms.openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
 from langchain import HuggingFaceHub
+import numpy as np
 
 
 #Extract Information from PDF file
@@ -64,6 +65,34 @@ def pull_from_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,
     index = Pinecone.from_existing_index(index_name, embeddings)
     return index
 
+
+def similar_docs_hf(query, final_docs_list, k):
+
+    HF_KEY = "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"
+    
+    headers = {"Authorization": f"Bearer {HF_KEY}"}
+    API_URL = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2"
+
+    payload = {
+        "inputs": {
+            "source_sentence": query, # query
+            "sentences": final_docs_list
+        }
+      }
+    response = requests.post(API_URL, headers=headers, json=payload)
+
+    sorted_list = response.json()
+
+    
+    pairs = list(zip( sorted_list , final_docs_list))
+
+    # Sort the pairs in descending order of the first element of each pair
+    pairs.sort(key=lambda x: x[0], reverse=True)
+
+    # Unzip the pairs back into two lists
+    sorted_list , final_docs_list = zip(*pairs)
+    # sorted_list[:k] ,
+    return   final_docs_list[:k] 
 
 
 #Function to help us get relavant documents from vector store - based on user input
