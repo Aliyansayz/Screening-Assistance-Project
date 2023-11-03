@@ -35,7 +35,7 @@ def create_docs(user_pdf_list, unique_id):
 #Create embeddings instance
 def create_embeddings_load_data():
     #embeddings = OpenAIEmbeddings()
-    embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+    embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2") #  384
     return embeddings
 
 
