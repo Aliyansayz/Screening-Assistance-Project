@@ -84,9 +84,9 @@ def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_nam
 
 # Helps us get the summary of a document
 def get_summary(current_doc):
-    llm = OpenAI(temperature=0)
-    #llm = HuggingFaceHub(repo_id="bigscience/bloom", model_kwargs={"temperature":1e-10})
-    chain = load_summarize_chain(llm, chain_type="map_reduce")
+    # llm = OpenAI(temperature=0)
+    llm = HuggingFaceHub(repo_id="bigscience/bloom", model_kwargs={"temperature":1e-10})
+    # chain = load_summarize_chain(llm, chain_type="map_reduce")
     summary = chain.run([current_doc])
 
     return summary
