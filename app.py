@@ -42,7 +42,7 @@ def main():
             #Fecth relavant documents from PINECONE
             # relavant_docs=similar_docs(job_description,document_count,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
 
-            relavant_docs = similar_docs_hf(query= job_description , final_docs_list=final_docs_list, k = document_count )
+            score, relavant_docs = similar_docs_hf(query= job_description , final_docs_list=final_docs_list, k = document_count )
             #t.write(relavant_docs)
 
             #Introducing a line separator
@@ -54,15 +54,15 @@ def main():
                 st.subheader("👉 "+str(item+1))
 
                 #Displaying Filepath
-                st.write("**File** : "+relavant_docs[item][0].metadata['name'])
+                st.write("**File** : "+relavant_docs[0].metadata['name'])
 
                 #Introducing Expander feature
                 with st.expander('Show me 👀'): 
-                    st.info("**Match Score** : "+str(relavant_docs[item][1]))
+                    st.info("**Match Score** : "+str(score[0] ))
                     #st.write("***"+relavant_docs[item][0].page_content)
                     
                     #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
-                    summary = get_summary_hf(relavant_docs[item][0])
+                    summary = get_summary_hf(relavant_docs[0])
                     st.write("**Summary** : "+summary)
 
         st.success("Hope I was able to save your time❤️")
