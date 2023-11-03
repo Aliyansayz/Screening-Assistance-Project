@@ -34,14 +34,15 @@ def main():
             st.write("*Resumes uploaded* :"+str(len(final_docs_list)))
 
             #Create embeddings instance
-            embeddings=create_embeddings_load_data()
+            # embeddings=create_embeddings_load_data()
 
             #Push data to PINECONE
-            push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list)
+            # push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list)
 
             #Fecth relavant documents from PINECONE
-            relavant_docs=similar_docs(job_description,document_count,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
+            # relavant_docs=similar_docs(job_description,document_count,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
 
+            relavant_docs = similar_docs_hf(query= job_description , final_docs_list=final_docs_list, k = document_count )
             #t.write(relavant_docs)
 
             #Introducing a line separator
