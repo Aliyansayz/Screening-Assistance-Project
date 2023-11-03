@@ -14,8 +14,8 @@ from langchain import HuggingFaceHub
 #Extract Information from PDF file
 def get_pdf_text(pdf_doc):
     text = ""
-    pdf_reader = PdfReader(pdf_doc)
-    for page in pdf_reader.pages:
+    pdf_ = PdfReader(filename)
+    for page in pdf_.pages:
         text += page.extract_text()
     return text
 
@@ -24,18 +24,12 @@ def get_pdf_text(pdf_doc):
 # iterate over files in
 # that user uploaded PDF files, one by one
 def create_docs(user_pdf_list, unique_id):
-    docs=[]
-    for filename in user_pdf_list:
-        
-        chunks=get_pdf_text(filename)
+  docs = []
+  for filename in user_pdf_list:
+      docs.append(Document( page_content= pdf_textual(filename), metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
 
-        #Adding items to our list - Adding data & its metadata
-        docs.append(Document(
-            page_content=chunks,
-            metadata={"name": filename.name,"id":filename.id,"type=":filename.type,"size":filename.size,"unique_id":unique_id},
-        ))
+  return docs
 
-    return docs
 
 
 #Create embeddings instance
