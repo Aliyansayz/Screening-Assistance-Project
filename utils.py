@@ -112,6 +112,23 @@ def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_nam
     return similar_docs
 
 
+def get_summary_hf(relavant_docs ):
+
+  HF_KEY = "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"
+  headers = {"Authorization": f"Bearer {HF_KEY}"}
+  API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+  headers = {"Authorization": f"Bearer {HF_KEY}"}
+  API_URL = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2"
+  payload = {
+        "inputs": {
+            "inputs":  relavant_docs ,
+             "parameters": {"do_sample": False}
+        }
+      }
+    
+  response = requests.post(API_URL, headers=headers, json=payload)
+  return response.json()
+
 # Helps us get the summary of a document
 def get_summary(current_doc):
     # llm = OpenAI(temperature=0)
