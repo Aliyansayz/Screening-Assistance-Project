@@ -26,7 +26,7 @@ def get_pdf_text(pdf_doc):
 def create_docs(user_pdf_list, unique_id):
   docs = []
   for filename in user_pdf_list:
-      docs.append(Document( page_content= pdf_textual(filename), metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+      docs.append(Document( page_content= get_pdf_text(filename), metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
 
   return docs
 
