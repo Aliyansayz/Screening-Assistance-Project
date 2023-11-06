@@ -48,21 +48,35 @@ def main():
             st.write(":heavy_minus_sign:" * 30)
 
             #For each item in relavant docs - we are displaying some info of it on the UI
-            for item in range(len(relavant_docs)):
+            st.session_state['counter'] = index =  0 
+            
+            if st.button('Increment Counter'):
+    # Increment the counter when the button is clicked
+                st.session_state['counter'] += 1
+                
+                index =  st.session_state['counter']
+   
+            if st.button('Decrement Counter'):
+                    if button_state > 1 : 
+                        st.session_state['counter'] -= 1
+                        index =  st.session_state['counter']
+            
+            
+            # for item in range(len(relavant_docs)):
 
-                st.subheader("👉 "+str(item+1))
+            st.subheader("👉 "+str(index+1))
+            # st.subheader("  "+str(index+1)) 
+            #Displaying File Name 
+            st.write("**File** : "+relavant_docs[index][0].metadata['name'])
 
-                #Displaying Filepath
-                st.write("**File** : "+relavant_docs[item][0])
+            #Introducing Expander feature
+            with st.expander('Show me 👀'): 
+                st.info("**Match Score** : "+str(relavant_docs[index][1]))
+                st.write("***"+relavant_docs[index][0].page_content)
 
-                #Introducing Expander feature
-                with st.expander('Show me 👀'): 
-                    st.info("**Match Score** : "+str(relavant_docs[item][1]))
-                    #st.write("***"+relavant_docs[item][0].page_content)
-
-                    #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
-                    summary = get_summary(relavant_docs[item][0])
-                    st.write("**Summary** : "+summary)
+                #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
+                # summary = get_summary(relavant_docs[item][0]) 
+                # st.write("**Summary** : "+summary)
 
         st.success("Hope I was able to save your time❤️")
 
