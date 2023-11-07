@@ -74,6 +74,7 @@ def main():
                     
                 #Displaying File Name 
                 st.write("**File** : "+relavant_docs[item][0].metadata['name'])
+#metadata_filename( relevant_docs[item][0] ) 
     
                 #Introducing Expander feature
                 with st.expander('Show me 👀'): 
