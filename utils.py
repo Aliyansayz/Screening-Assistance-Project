@@ -113,6 +113,21 @@ def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_nam
     return similar_docs
 
 
+def metadata_filename( document ) : 
+
+   text = document.metadata["name"] 
+   pattern = r"name=\'(.*?)\'"
+
+  # Use re.findall() to find all matches
+   matches = re.search(pattern, text)
+
+   matches = re.findall(pattern, text)
+
+   return matches
+      
+   
+         
+
 def get_summary_hf(relavant_docs ):
 
   HF_KEY = "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"
