@@ -53,9 +53,9 @@ def main():
             # push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list) 
 
             #Fecth relavant documents from PINECONE
-            relavant_docs = similar_docs(job_description,document_count,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
+            relevant_docs = similar_docs(job_description,document_count,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
 
-            score, relavant_docs = similar_docs_hf(query= job_description , final_docs_list=final_docs_list, k = document_count ) 
+            # score, relavant_docs = similar_docs_hf(query= job_description , final_docs_list=final_docs_list, k = document_count ) 
             #t.write(relavant_docs)
 
             #Introducing a line separator
@@ -64,30 +64,39 @@ def main():
 
             
              #For each item in relavant docs - we are displaying some info of it on the UI
-            st.button('Next ', on_click=next_index )
-            st.button('Previous' , on_click= prev_index )
-
-            st.write(st.session_state['index'])
-
-            for item in range(len(relavant_docs)):
+            
+            for item in range(len(relevant_docs)):
                 
                 st.subheader("👉 "+str(item+1))
+
+                st.button('Next ', on_click=next_index )
+                
+                st.button('Previous' , on_click= prev_index )
+
+                st.write(st.session_state['index'])
 
                 #Displaying Filepath
             
                 # for item in range(len(relavant_docs)):
                     
                 #Displaying File Name 
-                st.write("**File** : "+relavant_docs[item][0].metadata['name'])
+                name =  metadata_filename(relevant_docs[item][0] )
+                st.write("**File** : "+str(name) )
+                # st.write("**File** : "+relavant_docs[item][0].metadata['name'])
                 # metadata_filename( relevant_docs[item][0] ) 
+
+
     
                 #Introducing Expander feature
                 
                 with st.expander('Show me 👀'): 
-                    st.info("**Match Score** : "+str(relavant_docs[index][1]))
-                    st.write("***"+relavant_docs[item][0].page_content)        
+                    st.info("**Match Score** : "+str(relevant_docs[index][1]))
+                    st.write("***"+relavant_docs[item][0].page_content)  
+                
+                
+      
                     #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
-                    summary = get_summary_hf(relavant_docs[0])
+                    summary = get_summary_hf(relevant_docs[0])
                     st.write("**Summary** : "+summary)
 
         st.success("Hope I was able to save your time❤️")
