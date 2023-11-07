@@ -10,6 +10,16 @@ if 'unique_id' not in st.session_state:
 if 'index' not in st.session_state:
     st.session_state['index'] = 0
 
+def next_index(): 
+    
+        st.session_state['index'] += 1
+
+def prev_index():
+    if  st.session_state['index'] > 1 :
+        st.session_state['index'] -= 1
+    else: 
+        pass
+
 def main():
     load_dotenv()
 
@@ -51,15 +61,7 @@ def main():
             #Introducing a line separator
             st.write(":heavy_minus_sign:" * 30)
 
-            def next_index(): 
-                
-                    st.session_state['index'] += 1
 
-            def prev_index():
-                if  st.session_state['index'] > 1 :
-                    st.session_state['index'] -= 1
-                else: 
-                    pass
             
              #For each item in relavant docs - we are displaying some info of it on the UI
             st.button('Next ', on_click=next_index )
