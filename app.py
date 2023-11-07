@@ -4,8 +4,9 @@ from utils import *
 import uuid
 
 #Creating session variables
-if 'unique_id' not in st.session_state:
-    st.session_state['unique_id'] =''
+# if 'unique_id' not in st.session_state:
+#     st.session_state['unique_id'] =''
+st.session_state['unique_id'] = "aaa365fe031e4b5ab90aba54eaf6012e"
 
 def main():
     load_dotenv()
@@ -60,23 +61,28 @@ def main():
                     if button_state > 1 : 
                         st.session_state['counter'] -= 1
                         index =  st.session_state['counter']
+
             
+            #For each item in relavant docs - we are displaying some info of it on the UI
+            for item in range(len(relavant_docs)):
+                
+                st.subheader("👉 "+str(item+1))
+
+                #Displaying Filepath
             
-            # for item in range(len(relavant_docs)):
-
-            st.subheader("👉 "+str(index+1))
-            # st.subheader("  "+str(index+1)) 
-            #Displaying File Name 
-            st.write("**File** : "+relavant_docs[index][0].metadata['name'])
-
-            #Introducing Expander feature
-            with st.expander('Show me 👀'): 
-                st.info("**Match Score** : "+str(relavant_docs[index][1]))
-                st.write("***"+relavant_docs[index][0].page_content)
-
-                #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
-                # summary = get_summary(relavant_docs[item][0]) 
-                # st.write("**Summary** : "+summary)
+                # for item in range(len(relavant_docs)):
+                    
+                #Displaying File Name 
+                st.write("**File** : "+relavant_docs[item][0].metadata['name'])
+    
+                #Introducing Expander feature
+                with st.expander('Show me 👀'): 
+                    st.info("**Match Score** : "+str(relavant_docs[index][1]))
+                    st.write("***"+relavant_docs[item][0].page_content)
+    
+                    #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
+                    summary = get_summary(relavant_docs[item][0]) 
+                    st.write("**Summary** : "+summary)
 
         st.success("Hope I was able to save your time❤️")
 
