@@ -1,4 +1,3 @@
-import openai
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 from langchain.llms import OpenAI
@@ -10,7 +9,7 @@ from langchain.llms.openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
 from langchain import HuggingFaceHub
 import numpy as np
-import requests
+import re
 
 
 #Extract Information from PDF file
@@ -28,7 +27,7 @@ def get_pdf_text(filename):
 def create_docs(user_pdf_list, unique_id):
   docs = []
   for filename in user_pdf_list:
-      # docs.append(Document( page_content= get_pdf_text(filename), metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+      docs.append(Document( page_content= get_pdf_text(filename), metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
       docs.append(get_pdf_text(filename))
       
   return docs
@@ -112,6 +111,21 @@ def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_nam
     #print(similar_docs)
     return similar_docs
 
+
+def metadata_filename( document ) : 
+
+   text = document.metadata["name"] 
+   pattern = r"name=\'(.*?)\'"
+
+  # Use re.findall() to find all matches
+   matches = re.search(pattern, text)
+
+   matches = re.findall(pattern, text)
+
+   return matches
+      
+   
+         
 
 def get_summary_hf(relavant_docs ):
 
