@@ -132,7 +132,7 @@ def metadata_filename( document ) :
 
    return names
 
-def docs_content():
+def docs_content(relevant_docs):
     content = [] 
     for doc in relevant_docs:    
         content.append(doc[0].page_content)
