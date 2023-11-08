@@ -7,18 +7,18 @@ import uuid
 if 'unique_id' not in st.session_state:
     st.session_state['unique_id'] =''
 
-if 'index' not in st.session_state:
-    st.session_state['index'] = 0
+# if 'index' not in st.session_state:
+#     st.session_state['index'] = 0
 
-def next_index(): 
+# def next_index(): 
     
-        st.session_state['index'] += 1
+#         st.session_state['index'] += 1
 
-def prev_index():
-    if  st.session_state['index'] > 1 :
-        st.session_state['index'] -= 1
-    else: 
-        pass
+# def prev_index():
+#     if  st.session_state['index'] > 1 :
+#         st.session_state['index'] -= 1
+#     else: 
+#         pass
 
 def main():
     load_dotenv()
@@ -65,39 +65,40 @@ def main():
             
              #For each item in relavant docs - we are displaying some info of it on the UI
             
-            for item in range(len(relevant_docs)):
+            # for item in range(len(relevant_docs)):
                 
-                st.subheader("👉 "+str(item+1))
+            st.subheader("👉 "+str("Following are best matching resumes of job description"))
 
-                st.button('Next ', on_click=next_index )
-                
-                st.button('Previous' , on_click= prev_index )
-
-                st.write(st.session_state['index'])
-
-                #Displaying Filepath
+            # st.button('Next ', on_click=next_index )
             
-                # for item in range(len(relavant_docs)):
-                    
-                #Displaying File Name 
-                name =  metadata_filename(relevant_docs )
-                st.write("**File** : "+str(name) )
-                # st.write("**File** : "+relavant_docs[item][0].metadata['name'])
+            # st.button('Previous' , on_click= prev_index )
+
+            # st.write(st.session_state['index'])
+
+            #Displaying Filepath
+        
+            # for item in range(len(relavant_docs)):
                 
+            #Displaying File Name 
+            name =  metadata_filename(relevant_docs )
+            st.write("**File** : "+str(name) )
+            # st.write("**File** : "+relavant_docs[item][0].metadata['name'])
+            
 
 
-    
-                #Introducing Expander feature
-                
-                with st.expander('Show me 👀'): 
-                    st.info("**Match Score** : "+str(relevant_docs[index][1]))
-                    st.write("***"+relavant_docs[item][0].page_content)  
-                
-                
-      
-                    #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
-                    summary = get_summary_hf(relevant_docs[0])
-                    st.write("**Summary** : "+summary)
+
+            #Introducing Expander feature
+            
+            with st.expander('Show me 👀'): 
+                scores = get_score(relevant_docs)
+                st.info("**Match Score** : "+str(scores)
+                st.write("***"+relavant_docs[item][0].page_content)  
+            
+            
+  
+                #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
+                summary = get_summary_hf(relevant_docs )
+                st.write("**Summary** : "+summary)
 
         st.success("Hope I was able to save your time❤️")
 
