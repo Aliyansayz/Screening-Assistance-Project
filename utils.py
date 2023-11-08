@@ -112,6 +112,14 @@ def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_nam
     return similar_docs
 
 
+def get_score(relevant_docs):
+  scores = []
+  for doc in relevant_docs:
+      scores.append(doc[1])
+
+  return scores
+
+
 def metadata_filename( document ) : 
    
    names = [ ]
