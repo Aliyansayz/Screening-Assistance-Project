@@ -116,25 +116,14 @@ def metadata_filename( document ) :
    
    names = [ ]
    for doc in document: 
-      
-       text = doc.metadata["name"] 
-       pattern = r"name=\'(.*?)\'"
-       matches = re.findall(pattern, text)
-       names.append(matches) 
+    
+        text = str(doc[0].metadata["name"] )
+        pattern = r"name=\'(.*?)\'"
+        matches = re.findall(pattern, text)
+        names.append(matches) 
 
    return names
 
-#def metadata_filename( document ) : 
-
-  # text = document.metadata["name"] 
-  # pattern = r"name=\'(.*?)\'"
-
-  # Use re.findall() to find all matches
-  # matches = re.search(pattern, text)
-
-   #matches = re.findall(pattern, text)
-
-   #return matches
       
    
          
