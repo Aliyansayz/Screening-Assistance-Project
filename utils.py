@@ -133,19 +133,22 @@ def metadata_filename( document ) :
    return names
 
       
-   
-         
+def docs_summary(relevant_docs ):
+    summary = [ ] 
+    for doc in relevant_docs:    
+        summary.append(get_summary_hf(doc[0].page_content))
 
-def get_summary_hf(relavant_docs ):
+    return summary
+
+
+def get_summary_hf( document ):
 
   HF_KEY = "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"
-  headers = {"Authorization": f"Bearer {HF_KEY}"}
   API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
   headers = {"Authorization": f"Bearer {HF_KEY}"}
-  API_URL = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2"
   payload = {
         "inputs": {
-            "inputs":  relavant_docs ,
+            "inputs":  document ,
              "parameters": {"do_sample": False}
         }
       }
