@@ -24,13 +24,51 @@ def get_pdf_text(filename):
 
 # iterate over files in
 # that user uploaded PDF files, one by one
-def create_docs(user_pdf_list, unique_id):
+
+def create_docs(user_file_list, unique_id):
   docs = []
-  for filename in user_pdf_list:
-      docs.append(Document( page_content= get_pdf_text(filename), metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
-      docs.append(get_pdf_text(filename))
-      
+  for filename in user_file_list:
+
+      ext = filename.split(".")[-1]
+
+      # Use TextLoader for .txt files
+      if ext == "txt":
+
+          loader = TextLoader(filename)
+          doc = loader.load()
+
+      # Use HTMLLoader for .html files
+      elif ext == "html":
+          loader = UnstructuredHTMLLoader(filename)
+          doc = loader.load()
+
+      # Use PDFLoader for .pdf files
+      elif ext == "pdf":
+          loader = PyPDFLoader(filename)
+          doc = loader.load()
+
+      elif ext == "docx":
+          loader = Docx2txtLoader(filename)
+          doc = loader.load()
+
+      elif ext == "md":
+          loader = UnstructuredMarkdownLoader(filename)
+          doc = loader.load()
+      # Skip other file types
+      else:
+          continue
+      docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+
   return docs
+
+
+# def create_docs(user_pdf_list, unique_id):
+#   docs = []
+#   for filename in user_pdf_list:
+#       docs.append(Document( page_content= get_pdf_text(filename), metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+#       docs.append(get_pdf_text(filename))
+      
+#   return docs
 
 
 
