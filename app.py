@@ -93,17 +93,17 @@ def main():
                 scores = get_score(relevant_docs)
                 st.info("**Match Score** : "+str(scores))
                 content = docs_content(relevant_docs)
-                st.write("***"+ content )  
+                st.write("***",content)  
             
             
   
                 #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
                 summary = docs_summary(relevant_docs )
-                st.write("**Summary** : "+summary)
+                st.write("**Summary** : ",summary)
 
         st.success("Hope I was able to save your time❤️")
 
 
-#Invoking main function
+# #Invoking main function
 if __name__ == '__main__':
     main()
