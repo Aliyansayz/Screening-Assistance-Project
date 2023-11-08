@@ -92,7 +92,7 @@ def main():
             with st.expander('Show me 👀'): 
                 scores = get_score(relevant_docs)
                 st.info("**Match Score** : "+str(scores)
-                st.write("***"+relavant_docs[0][0].page_content)  
+                st.write("***"+ docs_content(relevant_docs))  
             
             
   
