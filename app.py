@@ -91,7 +91,7 @@ def main():
             
             with st.expander('Show me 👀'): 
                 scores = get_score(relevant_docs)
-                st.info("**Match Score** : "+str(scores)
+                st.info("**Match Score** : "+str(scores))
                 content = docs_content(relevant_docs)
                 st.write("***"+ content )  
             
