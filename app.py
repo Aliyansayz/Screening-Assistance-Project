@@ -92,12 +92,12 @@ def main():
             with st.expander('Show me 👀'): 
                 scores = get_score(relevant_docs)
                 st.info("**Match Score** : "+str(scores)
-                st.write("***"+relavant_docs[item][0].page_content)  
+                st.write("***"+relavant_docs[0][0].page_content)  
             
             
   
                 #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
-                summary = get_summary_hf(relevant_docs )
+                summary = docs_summary(relevant_docs )
                 st.write("**Summary** : "+summary)
 
         st.success("Hope I was able to save your time❤️")
