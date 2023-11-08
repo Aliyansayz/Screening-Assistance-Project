@@ -10,7 +10,9 @@ from langchain.chains.summarize import load_summarize_chain
 from langchain import HuggingFaceHub
 import numpy as np
 import re
-
+import requests
+from transformers import BertTokenizerFast, BertLMHeadModel
+from transformers import pipeline
 
 #Extract Information from PDF file
 def get_pdf_text(filename):
@@ -180,25 +182,44 @@ def docs_content(relevant_docs):
 def docs_summary(relevant_docs ):
     summary = [ ] 
     for doc in relevant_docs:    
-        summary.append(get_summary_hf(doc[0].page_content))
+        summary.append(get_summary_hf(str(doc[0].page_content)))
 
     return summary
 
 
-def get_summary_hf( document ):
+def get_summary_hf(target) :
 
-  HF_KEY = "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"
-  API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
-  headers = {"Authorization": f"Bearer {HF_KEY}"}
-  payload = {
-        "inputs": {
-            "inputs":  document ,
-             "parameters": {"do_sample": False}
-        }
-      }
+
+    # Specify the model name
+    model_name = "bert-base-uncased"
+
+    # Load the BERT tokenizer and model
+    tokenizer = BertTokenizerFast.from_pretrained(model_name)
+    model = BertLMHeadModel.from_pretrained(model_name)
+
+    # Initialize the summarization pipeline
+    summarizer = pipeline('summarization', model=model, tokenizer=tokenizer)
+
+    # Use the pipeline to summarize the text
+    summary = summarizer(str(target), max_length=150, min_length=25, do_sample=False)
+
+    return summary
+
+
+# def get_summary_hf( document ):
+
+#   HF_KEY = "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"
+#   API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+#   headers = {"Authorization": f"Bearer {HF_KEY}"}
+#   payload = {
+#         "inputs": {
+#             "inputs":  document ,
+#              "parameters": {"do_sample": False}
+#         }
+#       }
     
-  response = requests.post(API_URL, headers=headers, json=payload)
-  return response.json()
+#   response = requests.post(API_URL, headers=headers, json=payload)
+#   return response.json()
 
 # Helps us get the summary of a document
 def get_summary(current_doc):
