@@ -113,16 +113,28 @@ def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_nam
 
 
 def metadata_filename( document ) : 
+   
+   names = [ ]
+   for doc in document: 
+      
+       text = doc.metadata["name"] 
+       pattern = r"name=\'(.*?)\'"
+      matches = re.findall(pattern, text)
+       names.append(matches) 
 
-   text = document.metadata["name"] 
-   pattern = r"name=\'(.*?)\'"
+   return names
+
+#def metadata_filename( document ) : 
+
+  # text = document.metadata["name"] 
+  # pattern = r"name=\'(.*?)\'"
 
   # Use re.findall() to find all matches
-   matches = re.search(pattern, text)
+  # matches = re.search(pattern, text)
 
-   matches = re.findall(pattern, text)
+   #matches = re.findall(pattern, text)
 
-   return matches
+   #return matches
       
    
          
