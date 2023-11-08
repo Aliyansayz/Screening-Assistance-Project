@@ -80,10 +80,10 @@ def main():
                 # for item in range(len(relavant_docs)):
                     
                 #Displaying File Name 
-                name =  metadata_filename(relevant_docs[item][0] )
+                name =  metadata_filename(relevant_docs )
                 st.write("**File** : "+str(name) )
                 # st.write("**File** : "+relavant_docs[item][0].metadata['name'])
-                # metadata_filename( relevant_docs[item][0] ) 
+                
 
 
     
