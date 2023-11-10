@@ -46,8 +46,8 @@ def main():
     # Display content based on the selected option
     if option == "Upload":
         st.header("Upload Section")
-        uploaded_file = st.file_uploader("Upload resumes here, ** DOCX PDF MD ** files allowed", type=["pdf", "docx", "md"],accept_multiple_files=True)
-        if uploaded_file :
+        resume = st.file_uploader("Upload resumes here, ** DOCX PDF MD ** files allowed", type=["pdf", "docx", "md"],accept_multiple_files=True)
+        if resume :
             st.success("File uploaded successfully!")
             # Process the uploaded file if needed
 
@@ -69,7 +69,7 @@ def main():
             st.session_state['unique_id']= "aaa365fe031e4b5ab90aba54eaf6012e"
 
             #Create a documents list out of all the user uploaded pdf files
-            final_docs_list=create_docs(pdf,st.session_state['unique_id'])
+            final_docs_list=create_docs(resume ,st.session_state['unique_id'])
 
             #Displaying the count of resumes that have been uploaded
             # st.write("*Resumes uploaded* :"+str(len(final_docs_list)))
@@ -77,8 +77,9 @@ def main():
             #Create embeddings instance
             embeddings=create_embeddings_load_data()
 
-            #Push data to PINECONE
-            # push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list) 
+            if option == "Upload":
+                        #Push data to PINECONE
+                push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list) 
 
             #Fecth relavant documents from PINECONE
             relevant_docs = similar_docs(job_description,document_count,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
