@@ -1,9 +1,10 @@
+transformers
 langchain
 streamlit
 tiktoken
 python-dotenv
 unstructured
-pinecone-client
-pypdf
-sentence_transformers
+pinecone-client 
+pypdf 
+sentence_transformers  
 request

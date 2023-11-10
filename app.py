@@ -7,30 +7,58 @@ import uuid
 if 'unique_id' not in st.session_state:
     st.session_state['unique_id'] =''
 
-if 'index' not in st.session_state:
-    st.session_state['index'] = 0
 
-def next_index(): 
+
+
+
+# if 'index' not in st.session_state:
+#     st.session_state['index'] = 0
+
+# def next_index(): 
     
-        st.session_state['index'] += 1
+#         st.session_state['index'] += 1
 
-def prev_index():
-    if  st.session_state['index'] > 1 :
-        st.session_state['index'] -= 1
-    else: 
-        pass
+# def prev_index():
+#     if  st.session_state['index'] > 1 :
+#         st.session_state['index'] -= 1
+#     else: 
+#         pass
 
 def main():
     load_dotenv()
 
-    st.set_page_config(page_title="Resume Screening Assistance")
-    st.title("HR - Resume Screening Assistance...💁 ")
+    custom_css = """
+    <style>
+    body {
+    background-color: #29293d; /* Set your desired background color here */
+    }
+    </style>
+    """
+
+    st.set_page_config(page_title="Resume Matching And Upload App")
+    st.markdown(custom_css, unsafe_allow_html=True)
+
+
+
+    # option2 = st.selectbox("Choose an option:", ["Upload", "Continue Without Uploading"])
+    option = st.radio("Choose an option:", ["Continue Without Uploading", "Upload" ]) 
+
+    # Display content based on the selected option
+    if option == "Upload":
+        st.header("Upload Section")
+        uploaded_file = st.file_uploader("Upload resumes here, ** DOCX PDF MD ** files allowed", type=["pdf", "docx", "md"],accept_multiple_files=True)
+        if uploaded_file :
+            st.success("File uploaded successfully!")
+            # Process the uploaded file if needed
+
     st.subheader("I can help you in resume screening process")
 
+
+    
     job_description = st.text_area("Please paste the 'JOB DESCRIPTION' here...",key="1")
     document_count = st.text_input("No.of 'RESUMES' to return",key="2")
     # Upload the Resumes (pdf files)
-    pdf = st.file_uploader("Upload resumes here, only PDF files allowed", type=["pdf"],accept_multiple_files=True)
+    # pdf = st.file_uploader("Upload resumes here, only PDF files allowed", type=["pdf"],accept_multiple_files=True)
 
     submit=st.button("Help me with the analysis")
 
@@ -53,9 +81,9 @@ def main():
             # push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list) 
 
             #Fecth relavant documents from PINECONE
-            relavant_docs = similar_docs(job_description,document_count,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
+            relevant_docs = similar_docs(job_description,document_count,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
 
-            score, relavant_docs = similar_docs_hf(query= job_description , final_docs_list=final_docs_list, k = document_count ) 
+            # score, relavant_docs = similar_docs_hf(query= job_description , final_docs_list=final_docs_list, k = document_count ) 
             #t.write(relavant_docs)
 
             #Introducing a line separator
@@ -64,35 +92,59 @@ def main():
 
             
              #For each item in relavant docs - we are displaying some info of it on the UI
-            st.button('Next ', on_click=next_index )
-            st.button('Previous' , on_click= prev_index )
-
-            st.write(st.session_state['index'])
-
-            for item in range(len(relavant_docs)):
-                
-                st.subheader("👉 "+str(item+1))
-
-                #Displaying Filepath
             
-                # for item in range(len(relavant_docs)):
-                    
-                #Displaying File Name 
-                st.write("**File** : "+relavant_docs[item][0].metadata['name'])
-                # metadata_filename( relevant_docs[item][0] ) 
-    
-                #Introducing Expander feature
+            # for item in range(len(relevant_docs)): 
                 
+
+            # st.button('Next ', on_click=next_index )
+            
+            # st.button('Previous' , on_click= prev_index )
+
+            # st.write(st.session_state['index'])
+
+            #Displaying Filepath
+        
+            # for item in range(len(relavant_docs)):
+
+            st.subheader("👉 "+str("Following are best matching resumes of job description"))
+                
+            #Displaying File Name 
+            names =  metadata_filename(relevant_docs )
+            scores = get_score(relevant_docs)
+            content = docs_content(relevant_docs)
+
+            for i, name in enumerate(names):
+
+                st.subheader("👉 "+str(i+1))
+                st.write("**File** : "+str(name[0]) )
                 with st.expander('Show me 👀'): 
-                    st.info("**Match Score** : "+str(relavant_docs[index][1]))
-                    st.write("***"+relavant_docs[item][0].page_content)        
-                    #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
-                    summary = get_summary_hf(relavant_docs[0])
-                    st.write("**Summary** : "+summary)
+                    
+                    st.info("**Match Score** : "+str(scores[i]))
+                    
+                    st.write("***",content[i])  
 
-        st.success("Hope I was able to save your time❤️")
+            # st.write("**File** : "+relavant_docs[item][0].metadata['name'])
+            
 
 
-#Invoking main function
+
+            #Introducing Expander feature
+            
+            with st.expander('Show me 👀'): 
+                scores = get_score(relevant_docs)
+                st.info("**Match Score** : "+str(scores))
+                content = docs_content(relevant_docs)
+                st.write("***",content)  
+            
+            
+  
+                #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
+                summary = docs_summary(relevant_docs )
+                st.write("**Summary** : ",summary)
+
+        # st.success("Hope I was able to save your time❤️") 
+
+
+# #Invoking main function
 if __name__ == '__main__':
     main()

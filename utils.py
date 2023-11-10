@@ -1,4 +1,3 @@
-import openai
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 from langchain.llms import OpenAI
@@ -10,8 +9,10 @@ from langchain.llms.openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
 from langchain import HuggingFaceHub
 import numpy as np
+import re
 import requests
-
+from transformers import BertTokenizerFast, BertLMHeadModel
+from transformers import pipeline
 
 #Extract Information from PDF file
 def get_pdf_text(filename):
@@ -25,13 +26,51 @@ def get_pdf_text(filename):
 
 # iterate over files in
 # that user uploaded PDF files, one by one
-def create_docs(user_pdf_list, unique_id):
+
+def create_docs(user_file_list, unique_id):
   docs = []
-  for filename in user_pdf_list:
-      # docs.append(Document( page_content= get_pdf_text(filename), metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
-      docs.append(get_pdf_text(filename))
-      
+  for filename in user_file_list:
+
+      ext = filename.split(".")[-1]
+
+      # Use TextLoader for .txt files
+      if ext == "txt":
+
+          loader = TextLoader(filename)
+          doc = loader.load()
+
+      # Use HTMLLoader for .html files
+      elif ext == "html":
+          loader = UnstructuredHTMLLoader(filename)
+          doc = loader.load()
+
+      # Use PDFLoader for .pdf files
+      elif ext == "pdf":
+          loader = PyPDFLoader(filename)
+          doc = loader.load()
+
+      elif ext == "docx":
+          loader = Docx2txtLoader(filename)
+          doc = loader.load()
+
+      elif ext == "md":
+          loader = UnstructuredMarkdownLoader(filename)
+          doc = loader.load()
+      # Skip other file types
+      else:
+          continue
+      docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+
   return docs
+
+
+# def create_docs(user_pdf_list, unique_id):
+#   docs = []
+#   for filename in user_pdf_list:
+#       docs.append(Document( page_content= get_pdf_text(filename), metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+#       docs.append(get_pdf_text(filename))
+      
+#   return docs
 
 
 
@@ -113,28 +152,80 @@ def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_nam
     return similar_docs
 
 
-def get_summary_hf(relavant_docs ):
+def get_score(relevant_docs):
+  scores = []
+  for doc in relevant_docs:
+      scores.append(doc[1])
 
-  HF_KEY = "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"
-  headers = {"Authorization": f"Bearer {HF_KEY}"}
-  API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
-  headers = {"Authorization": f"Bearer {HF_KEY}"}
-  API_URL = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2"
-  payload = {
-        "inputs": {
-            "inputs":  relavant_docs ,
-             "parameters": {"do_sample": False}
-        }
-      }
+  return scores
+
+
+def metadata_filename( document ) : 
+   
+   names = [ ]
+   for doc in document: 
     
-  response = requests.post(API_URL, headers=headers, json=payload)
-  return response.json()
+        text = str(doc[0].metadata["name"] )
+        pattern = r"name=\'(.*?)\'"
+        matches = re.findall(pattern, text)
+        names.append(matches) 
+
+   return names
+
+def docs_content(relevant_docs):
+    content = [] 
+    for doc in relevant_docs:    
+        content.append(doc[0].page_content)
+
+    return content
+      
+def docs_summary(relevant_docs ):
+    summary = [ ] 
+    for doc in relevant_docs:    
+        summary.append(get_summary(str(doc[0].page_content)))
+
+    return summary
+
+
+def get_summary_hf(target) :
+
+
+    # Specify the model name
+    model_name = "bert-base-uncased"
+
+    # Load the BERT tokenizer and model
+    tokenizer = BertTokenizerFast.from_pretrained(model_name)
+    model = BertLMHeadModel.from_pretrained(model_name)
+
+    # Initialize the summarization pipeline
+    summarizer = pipeline('summarization', model=model, tokenizer=tokenizer)
+
+    # Use the pipeline to summarize the text
+    summary = summarizer(str(target), max_length=150, min_length=25, do_sample=False)
+
+    return summary
+
+
+# def get_summary_hf( document ):
+
+#   HF_KEY = "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"
+#   API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+#   headers = {"Authorization": f"Bearer {HF_KEY}"}
+#   payload = {
+#         "inputs": {
+#             "inputs":  document ,
+#              "parameters": {"do_sample": False}
+#         }
+#       }
+    
+#   response = requests.post(API_URL, headers=headers, json=payload)
+#   return response.json()
 
 # Helps us get the summary of a document
 def get_summary(current_doc):
-    # llm = OpenAI(temperature=0)
-    llm = HuggingFaceHub(repo_id="bigscience/bloom", model_kwargs={"temperature":1e-10})
-    # chain = load_summarize_chain(llm, chain_type="map_reduce")
+    llm = OpenAI(temperature=0)
+    # llm = HuggingFaceHub(repo_id="bigscience/bloom", model_kwargs={"temperature":1e-10})
+    chain = load_summarize_chain(llm, chain_type="map_reduce") 
     summary = chain.run([current_doc])
 
     return summary

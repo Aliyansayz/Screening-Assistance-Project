@@ -1,0 +1,2 @@
+pip install langchain streamlit tiktoken python-dotenv unstructured
+pip install pinecone-client  pypdf  sentence_transformers  request transformers
