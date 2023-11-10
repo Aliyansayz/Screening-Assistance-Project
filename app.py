@@ -27,16 +27,16 @@ if 'unique_id' not in st.session_state:
 def main():
     load_dotenv()
 
-    custom_css = """
-    <style>
-    body {
-    background-color: #29293d; /* Set your desired background color here */
-    }
-    </style>
-    """
+    # custom_css = """
+    # <style>
+    # body {
+    # background-color: #29293d; /* Set your desired background color here */
+    # }
+    # </style>
+    # """
 
     st.set_page_config(page_title="Resume Matching And Upload App")
-    st.markdown(custom_css, unsafe_allow_html=True)
+    # st.markdown(custom_css, unsafe_allow_html=True) 
 
 
 
