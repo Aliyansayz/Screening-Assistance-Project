@@ -1,13 +1,17 @@
+import openai
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 from langchain.llms import OpenAI
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+from langchain.document_loaders import UnstructuredHTMLLoader
+from langchain.document_loaders import UnstructuredMarkdownLoader
+from langchain.document_loaders import PyPDFLoader
+from langchain.document_loaders import Docx2txtLoader
 from langchain.schema import Document
 import pinecone
 from pypdf import PdfReader
 from langchain.llms.openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
-from langchain import HuggingFaceHub
 import numpy as np
 import re
 import requests
@@ -180,10 +184,14 @@ def docs_content(relevant_docs):
     return content
       
 def docs_summary(relevant_docs ):
+    documents = []
     summary = [ ] 
-    for doc in relevant_docs:    
-        summary.append(get_summary(str(doc[0].page_content)))
 
+    for doc in relevant_docs:     
+        documents.append(doc[0].page_content)
+
+    for document in documents :
+           summary.append( document )
     return summary
 
 
@@ -222,10 +230,25 @@ def get_summary_hf(target) :
 #   return response.json()
 
 # Helps us get the summary of a document
+
+
 def get_summary(current_doc):
+
     llm = OpenAI(temperature=0)
     # llm = HuggingFaceHub(repo_id="bigscience/bloom", model_kwargs={"temperature":1e-10})
     chain = load_summarize_chain(llm, chain_type="map_reduce") 
     summary = chain.run([current_doc])
 
-    return summary
+    return summary 
+
+
+    # client = OpenAI()
+    # response = client.chat.completions.create(
+    #     model="gpt-3.5-turbo",
+    #     messages=[
+    #     {"role": "system", "content": f"{current_doc}" },
+    #     {"role": "user", "content": "Summarize the following text: '{text_to_summarize}'"},
+    # ])
+
+    # return response['choices'][0]['message']['content'] 
+    # 

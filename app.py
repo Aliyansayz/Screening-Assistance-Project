@@ -27,16 +27,17 @@ if 'unique_id' not in st.session_state:
 def main():
     load_dotenv()
 
-    # custom_css = """
-    # <style>
-    # body {
-    # background-color: #29293d; /* Set your desired background color here */
-    # }
-    # </style>
-    # """
+    custom_css = """
+    <style>
+    body {
+    background-color: #29293d; /* Set your desired background color here */
+    }
+    </style>
+    """
 
     st.set_page_config(page_title="Resume Matching And Upload App")
-    # st.markdown(custom_css, unsafe_allow_html=True) 
+    st.title("Resume Matching And Upload App")
+    st.markdown(custom_css, unsafe_allow_html=True)  
 
 
 
@@ -51,16 +52,16 @@ def main():
             st.success("File uploaded successfully!")
             # Process the uploaded file if needed
 
-    st.subheader("I can help you in resume screening process")
+    # st.subheader("I can help you in resume screening process")
 
 
     
-    job_description = st.text_area("Please paste the 'JOB DESCRIPTION' here...",key="1")
+    job_description = st.text_area("Specify the 'Job Description' here...",key="1")
     document_count = st.text_input("No.of 'RESUMES' to return",key="2")
     # Upload the Resumes (pdf files)
     # pdf = st.file_uploader("Upload resumes here, only PDF files allowed", type=["pdf"],accept_multiple_files=True)
 
-    submit=st.button("Help me with the analysis")
+    submit=st.button("Analyze Vector Database")
 
     if submit:
         with st.spinner('Wait for it...'):
@@ -69,7 +70,6 @@ def main():
             st.session_state['unique_id']= "aaa365fe031e4b5ab90aba54eaf6012e"
 
             #Create a documents list out of all the user uploaded pdf files
-            final_docs_list=create_docs(resume ,st.session_state['unique_id'])
 
             #Displaying the count of resumes that have been uploaded
             # st.write("*Resumes uploaded* :"+str(len(final_docs_list)))
@@ -79,7 +79,8 @@ def main():
 
             if option == "Upload":
                         #Push data to PINECONE
-                push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list) 
+                    final_docs_list=create_docs(resume ,st.session_state['unique_id'])    
+                    push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list) 
 
             #Fecth relavant documents from PINECONE
             relevant_docs = similar_docs(job_description,document_count,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
@@ -107,7 +108,7 @@ def main():
         
             # for item in range(len(relavant_docs)):
 
-            st.subheader("👉 "+str("Following are best matching resumes of job description"))
+            st.subheader("🔍 "+str("Following are best matching resumes of job description"))
                 
             #Displaying File Name 
             names =  metadata_filename(relevant_docs )
@@ -131,17 +132,17 @@ def main():
 
             #Introducing Expander feature
             
-            with st.expander('Show me 👀'): 
-                scores = get_score(relevant_docs)
-                st.info("**Match Score** : "+str(scores))
-                content = docs_content(relevant_docs)
-                st.write("***",content)  
+            # with st.expander('Show me 👀'): 
+            #     scores = get_score(relevant_docs)
+            #     st.info("**Match Score** : "+str(scores))
+            #     content = docs_content(relevant_docs)
+            #     st.write("***",content)  
             
             
   
                 #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
-                summary = docs_summary(relevant_docs )
-                st.write("**Summary** : ",summary)
+                
+                # st.write("**Summary** : ",summary)
 
         # st.success("Hope I was able to save your time❤️") 
 
