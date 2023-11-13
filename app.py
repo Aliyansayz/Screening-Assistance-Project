@@ -35,23 +35,23 @@ def main():
     </style>
     """
 
-    st.set_page_config(page_title="Resume Matching And Upload App")
-    st.title("Resume Matching And Upload App")
+    st.set_page_config(page_title="Resume Matcher - Dashboard")
+    st.title("Resume Matcher")
     st.markdown(custom_css, unsafe_allow_html=True)  
 
 
 
     
-    job_description = st.text_area("Specify the job description here :",key="1")
+    job_description = st.text_area("Specify the job description to match against :",key="1")
     document_count = st.text_input("Number of resumes to return: ",key="2")
 
     # option2 = st.selectbox("Choose an option:", ["Upload", "Continue Without Uploading"])
-    option = st.radio("Do you want to upload resumes now :", ["Yes", "No" ]) 
+    option = st.radio("Do you want to upload new resumes with this request ? :", ["Yes", "No" ]) 
 
     # Display content based on the selected option
     if option == "Yes":
         st.header("Upload Section")
-        resume = st.file_uploader("Upload resumes here, ** DOCX PDF MD ** files allowed", type=["pdf", "docx", "md"],accept_multiple_files=True)
+        resume = st.file_uploader("Upload resumes here, (docx pdf md files allowed) ", type=["pdf", "docx", "md"],accept_multiple_files=True)
         if resume :
             st.success("File uploaded successfully!")
             # Process the uploaded file if needed
@@ -59,7 +59,7 @@ def main():
     # st.subheader("I can help you in resume screening process")
 
 
-    submit=st.button("Analyze Resumes To Match Description")
+    submit=st.button("Get Resumes")
 
     if submit:
         with st.spinner('Wait for it...'):
@@ -121,12 +121,12 @@ def main():
                     
                     st.info("**Match Score** : "+str(scores[i]))
                     
-                    st.write("***",content[i])  
+                    # st.write("***", content[i] )  
+
+                    st.write("**Summary**", get_summary(content[i]))  
 
             # st.write("**File** : "+relavant_docs[item][0].metadata['name'])
             
-
-
 
             #Introducing Expander feature
             
@@ -136,8 +136,6 @@ def main():
             #     content = docs_content(relevant_docs)
             #     st.write("***",content)  
             
-            
-  
                 #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
                 
                 # st.write("**Summary** : ",summary)
