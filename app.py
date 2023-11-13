@@ -41,6 +41,10 @@ def main():
 
 
 
+    
+    job_description = st.text_area("Specify the job description here :",key="1")
+    document_count = st.text_input("Number of resumes to return: ",key="2")
+
     # option2 = st.selectbox("Choose an option:", ["Upload", "Continue Without Uploading"])
     option = st.radio("Choose an option:", ["Continue Without Uploading", "Upload" ]) 
 
@@ -55,13 +59,7 @@ def main():
     # st.subheader("I can help you in resume screening process")
 
 
-    
-    job_description = st.text_area("Specify the 'Job Description' here...",key="1")
-    document_count = st.text_input("No.of 'RESUMES' to return",key="2")
-    # Upload the Resumes (pdf files)
-    # pdf = st.file_uploader("Upload resumes here, only PDF files allowed", type=["pdf"],accept_multiple_files=True)
-
-    submit=st.button("Analyze Vector Database")
+    submit=st.button("Analyze Resumes To Match Description")
 
     if submit:
         with st.spinner('Wait for it...'):
