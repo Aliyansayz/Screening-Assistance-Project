@@ -41,11 +41,15 @@ def main():
 
 
 
+    
+    job_description = st.text_area("Specify the job description here :",key="1")
+    document_count = st.text_input("Number of resumes to return: ",key="2")
+
     # option2 = st.selectbox("Choose an option:", ["Upload", "Continue Without Uploading"])
-    option = st.radio("Choose an option:", ["Continue Without Uploading", "Upload" ]) 
+    option = st.radio("Do you want to upload resumes now :", ["Yes", "No" ]) 
 
     # Display content based on the selected option
-    if option == "Upload":
+    if option == "Yes":
         st.header("Upload Section")
         resume = st.file_uploader("Upload resumes here, ** DOCX PDF MD ** files allowed", type=["pdf", "docx", "md"],accept_multiple_files=True)
         if resume :
@@ -55,13 +59,7 @@ def main():
     # st.subheader("I can help you in resume screening process")
 
 
-    
-    job_description = st.text_area("Specify the 'Job Description' here...",key="1")
-    document_count = st.text_input("No.of 'RESUMES' to return",key="2")
-    # Upload the Resumes (pdf files)
-    # pdf = st.file_uploader("Upload resumes here, only PDF files allowed", type=["pdf"],accept_multiple_files=True)
-
-    submit=st.button("Analyze Vector Database")
+    submit=st.button("Analyze Resumes To Match Description")
 
     if submit:
         with st.spinner('Wait for it...'):
@@ -77,7 +75,7 @@ def main():
             #Create embeddings instance
             embeddings=create_embeddings_load_data()
 
-            if option == "Upload":
+            if option == "Yes":
                         #Push data to PINECONE
                     final_docs_list=create_docs(resume ,st.session_state['unique_id'])    
                     push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list) 
