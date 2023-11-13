@@ -123,7 +123,7 @@ def main():
                     
                     # st.write("***", content[i] )  
 
-                    st.write("**Summary**", get_summary(content[i]))  
+                    st.write("**Summary**", get_summary(relevant_docs[i][0]))  
 
             # st.write("**File** : "+relavant_docs[item][0].metadata['name'])
             
