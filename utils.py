@@ -7,7 +7,9 @@ from langchain.document_loaders import UnstructuredHTMLLoader
 from langchain.document_loaders import UnstructuredMarkdownLoader
 from langchain.document_loaders import PyPDFLoader
 from langchain.document_loaders import Docx2txtLoader
-from langchain.schema import Document
+from langchain.schema import Document 
+import requests
+import json
 import pinecone
 from pypdf import PdfReader
 from langchain.llms.openai import OpenAI
@@ -28,8 +30,6 @@ def get_pdf_text(filename):
 
 
 
-# iterate over files in
-# that user uploaded PDF files, one by one
 
 def create_docs(user_file_list, unique_id):
   docs = []
@@ -68,13 +68,6 @@ def create_docs(user_file_list, unique_id):
   return docs
 
 
-# def create_docs(user_pdf_list, unique_id):
-#   docs = []
-#   for filename in user_pdf_list:
-#       docs.append(Document( page_content= get_pdf_text(filename), metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
-#       docs.append(get_pdf_text(filename))
-      
-#   return docs
 
 
 
@@ -97,7 +90,6 @@ def push_to_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,em
     
 
 
-#Function to pull infrmation from Vector Store - Pinecone here
 def pull_from_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings):
 
     pinecone.init(
@@ -131,16 +123,12 @@ def similar_docs_hf(query, final_docs_list, k):
     
     pairs = list(zip( score_list , final_docs_list))
 
-    # Sort the pairs in descending order of the first element of each pair
     pairs.sort(key=lambda x: x[0], reverse=True)
 
-    # Unzip the pairs back into two lists
     score_list , final_docs_list = zip(*pairs)
-    # sorted_list[:k] ,
     return    score_list , final_docs_list 
 
 
-#Function to help us get relavant documents from vector store - based on user input
 def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings,unique_id):
 
     pinecone.init(
@@ -198,17 +186,13 @@ def docs_summary(relevant_docs ):
 def get_summary_hf(target) :
 
 
-    # Specify the model name
     model_name = "bert-base-uncased"
 
-    # Load the BERT tokenizer and model
     tokenizer = BertTokenizerFast.from_pretrained(model_name)
     model = BertLMHeadModel.from_pretrained(model_name)
 
-    # Initialize the summarization pipeline
     summarizer = pipeline('summarization', model=model, tokenizer=tokenizer)
 
-    # Use the pipeline to summarize the text
     summary = summarizer(str(target), max_length=150, min_length=25, do_sample=False)
 
     return summary
@@ -234,12 +218,32 @@ def get_summary_hf(target) :
 
 def get_summary(current_doc):
 
-    llm = OpenAI(temperature=0)
-    # llm = HuggingFaceHub(repo_id="bigscience/bloom", model_kwargs={"temperature":1e-10})
+    llm = OpenAI(temperature=0 )
     chain = load_summarize_chain(llm, chain_type="map_reduce") 
     summary = chain.run([current_doc])
-
     return summary 
+
+    
+    # url = "https://api.openai.com/v1/chat/completions"
+    # headers = {
+    # 'Content-Type': 'application/json',
+    # 'Authorization': 'OPENAI_API_KEY'
+    # }
+    # data = {
+    #     "model": "gpt-3.5-turbo",
+    #     "messages": [
+    #     {"role": "user", "content": f"Summarize this text : {current_doc}" }
+    #     ],
+    #     "temperature": 0.7
+    #     }
+
+    # response = requests.post(url, headers=headers, data=json.dumps(data))
+
+
+    # completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": f"Summarize this text : {current_doc}"}]) 
+    # summary = response
+    # llm = HuggingFaceHub(repo_id="bigscience/bloom", model_kwargs={"temperature":1e-10})
+    # print(summary)
 
 
     # client = OpenAI()
