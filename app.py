@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from utils import *
 import uuid
 
-#Creating session variables
 if 'unique_id' not in st.session_state:
     st.session_state['unique_id'] =''
 
@@ -11,18 +10,6 @@ if 'unique_id' not in st.session_state:
 
 
 
-# if 'index' not in st.session_state:
-#     st.session_state['index'] = 0
-
-# def next_index(): 
-    
-#         st.session_state['index'] += 1
-
-# def prev_index():
-#     if  st.session_state['index'] > 1 :
-#         st.session_state['index'] -= 1
-#     else: 
-#         pass
 
 def main():
     load_dotenv()
@@ -42,16 +29,16 @@ def main():
 
 
     
-    job_description = st.text_area("Specify the job description to match against :",key="1")
+    job_description = st.text_area("Please enter the job description of the role :",key="1")
     document_count = st.text_input("Number of resumes to return: ",key="2")
 
     # option2 = st.selectbox("Choose an option:", ["Upload", "Continue Without Uploading"])
-    option = st.radio("Do you want to upload new resumes with this request ? :", ["Yes", "No" ]) 
+    option = st.radio("Do you want to upload new resumes with this request ? ", ["Yes", "No" ]) 
 
     # Display content based on the selected option
     if option == "Yes":
-        st.header("Upload Section")
-        resume = st.file_uploader("Upload resumes here, (docx pdf md files allowed) ", type=["pdf", "docx", "md"],accept_multiple_files=True)
+        # st.header("Resume ")
+        resume = st.file_uploader("Upload resumes here : ", type=["pdf", "docx", "md"],accept_multiple_files=True)
         if resume :
             st.success("File uploaded successfully!")
             # Process the uploaded file if needed
@@ -106,7 +93,7 @@ def main():
         
             # for item in range(len(relavant_docs)):
 
-            st.subheader("🔍 "+str("Following are best matching resumes of job description"))
+            st.subheader("🔍 "+str("Following are the resumes matching the job description"))
                 
             #Displaying File Name 
             names =  metadata_filename(relevant_docs )
@@ -122,27 +109,19 @@ def main():
                     st.info("**Match Score** : "+str(scores[i]))
                     
                     # st.write("***", content[i] )  
+                    try:
+                        st.write("**Summary**", get_summary(relevant_docs[i][0]))  
+                    
+                    except:
+                        st.write("**Unable to get summary due to api error of following resume content :**", content[i])
 
-                    st.write("**Summary**", get_summary(relevant_docs[i][0]))  
-
-            # st.write("**File** : "+relavant_docs[item][0].metadata['name'])
-            
-
-            #Introducing Expander feature
-            
-            # with st.expander('Show me 👀'): 
-            #     scores = get_score(relevant_docs)
-            #     st.info("**Match Score** : "+str(scores))
-            #     content = docs_content(relevant_docs)
-            #     st.write("***",content)  
-            
-                #Gets the summary of the current item using 'get_summary' function that we have created which uses LLM & Langchain chain
-                
-                # st.write("**Summary** : ",summary)
-
+          
+          
         # st.success("Hope I was able to save your time❤️") 
 
 
 # #Invoking main function
 if __name__ == '__main__':
     main()
+
+    
