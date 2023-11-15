@@ -1,10 +1,9 @@
+transformers
 langchain
 streamlit
-openai
 tiktoken
 python-dotenv
 unstructured
-pinecone-client
-pypdf
-sentence_transformers
+pypdf 
+langchain_experimental==0.0.36
 request
