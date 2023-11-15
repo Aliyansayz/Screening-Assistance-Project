@@ -6,3 +6,5 @@ unstructured
 pinecone-client 
 pypdf 
 langchain_experimental==0.0.36
+pandas
+re
