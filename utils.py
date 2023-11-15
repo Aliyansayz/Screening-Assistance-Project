@@ -18,9 +18,6 @@ from langchain.llms.openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
 import numpy as np
 import re
-import requests
-from transformers import BertTokenizerFast, BertLMHeadModel
-from transformers import pipeline
 
 #Extract Information from PDF file
 def get_pdf_text(filename):
@@ -185,19 +182,16 @@ def docs_summary(relevant_docs ):
     return summary
 
 
-def get_summary_hf(target) :
+# def get_summary_hf(target) :
 
 
-    model_name = "bert-base-uncased"
+#     model_name = "bert-base-uncased"
+#     tokenizer = BertTokenizerFast.from_pretrained(model_name)
+#     model = BertLMHeadModel.from_pretrained(model_name)
+#     summarizer = pipeline('summarization', model=model, tokenizer=tokenizer)
+#     summary = summarizer(str(target), max_length=150, min_length=25, do_sample=False)
 
-    tokenizer = BertTokenizerFast.from_pretrained(model_name)
-    model = BertLMHeadModel.from_pretrained(model_name)
-
-    summarizer = pipeline('summarization', model=model, tokenizer=tokenizer)
-
-    summary = summarizer(str(target), max_length=150, min_length=25, do_sample=False)
-
-    return summary
+#     return summary
 
 
 # def get_summary_hf( document ):
