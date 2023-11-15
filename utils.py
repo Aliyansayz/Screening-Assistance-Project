@@ -8,6 +8,8 @@ from langchain.document_loaders import UnstructuredMarkdownLoader
 from langchain.document_loaders import PyPDFLoader
 from langchain.document_loaders import Docx2txtLoader
 from langchain.schema import Document 
+import pandas as pd
+from langchain_experimental.agents.agent_toolkits.pandas.base import create_pandas_dataframe_agent
 import requests
 import json
 import pinecone
@@ -219,11 +221,11 @@ def get_summary_hf(target) :
 def get_summary(current_doc):
 
     llm = OpenAI(temperature=0 )
+
     chain = load_summarize_chain(llm, chain_type="map_reduce") 
     summary = chain.run([current_doc])
     return summary 
 
-    
     # url = "https://api.openai.com/v1/chat/completions"
     # headers = {
     # 'Content-Type': 'application/json',
@@ -243,6 +245,7 @@ def get_summary(current_doc):
     # completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": f"Summarize this text : {current_doc}"}]) 
     # summary = response
     # llm = HuggingFaceHub(repo_id="bigscience/bloom", model_kwargs={"temperature":1e-10})
+
     # print(summary)
 
 
