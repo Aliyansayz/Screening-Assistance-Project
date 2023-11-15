@@ -15,7 +15,6 @@ from langchain.llms.openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
 import numpy as np
 import re
-import requests
 
 #Extract Information from PDF file
 def get_pdf_text(filename):
