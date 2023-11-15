@@ -1,6 +1,6 @@
 import streamlit as st
 from dotenv import load_dotenv
-from utils import *
+from utils import * 
 import uuid
 
 if 'unique_id' not in st.session_state:
@@ -9,9 +9,34 @@ if 'unique_id' not in st.session_state:
 
 
 
+def csvapp():
+    st.title('Get Insights From Your Data')
+# openai_api_key = st.sidebar.text_input('OpenAI API Key')
+# OpenAI (openai_api_key=key)
+
+    def generate_response(input_text, data ):
+
+        load_dotenv()
+        df = pd.read_csv(data) 
+        llm = OpenAI()
+        agent = create_pandas_dataframe_agent(llm, df, verbose=True)
+        st.info(agent.run(input_text))
 
 
-def main():
+    with st.form('my_form'):
+    
+        data =  st.file_uploader("Upload CSV file :", type="csv")
+        text = st.text_area('Enter your questions here :')
+        submitted = st.form_submit_button('Get Insights')
+        
+    if  submitted :
+        generate_response(text, data )
+
+
+
+
+
+def resumeapp():
     load_dotenv()
 
     custom_css = """
@@ -22,7 +47,7 @@ def main():
     </style>
     """
 
-    st.set_page_config(page_title="Resume Matcher - Dashboard")
+    
     st.title("Resume Matcher")
     st.markdown(custom_css, unsafe_allow_html=True)  
 
@@ -32,7 +57,6 @@ def main():
     job_description = st.text_area("Please enter the job description of the role :",key="1")
     document_count = st.text_input("Number of resumes to return: ",key="2")
 
-    # option2 = st.selectbox("Choose an option:", ["Upload", "Continue Without Uploading"])
     option = st.radio("Do you want to upload new resumes with this request ? ", ["Yes", "No" ]) 
 
     # Display content based on the selected option
@@ -121,7 +145,20 @@ def main():
 
 
 # #Invoking main function
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#
+def main():
+    st.set_page_config(page_title="Resume Matcher & Analyzer App - Dashboard")
 
-    
+    app_option = st.selectbox("Select an app to run now :", ["Resume-Matcher", "CSV-Data-Analysis"])
+
+    if app_option == "Resume-Matcher" :
+        resumeapp()
+
+    elif app_option == "CSV-Data-Analysis":
+
+        csvapp()
+
+if __name__ == '__main__':
+
+    main()
