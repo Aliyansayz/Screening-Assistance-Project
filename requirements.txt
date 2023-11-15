@@ -8,3 +8,5 @@ pinecone-client
 pypdf
 sentence_transformers
 request
+pandas
+re
